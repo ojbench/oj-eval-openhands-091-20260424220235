@@ -182,10 +182,22 @@ private:
             x = z->right;
             xp = z->parent;
             transplant(z, z->right);
+            // Update sizes from xp to root
+            Node* n = xp;
+            while (n) {
+                updateSize(n);
+                n = n->parent;
+            }
         } else if (!z->right) {
             x = z->left;
             xp = z->parent;
             transplant(z, z->left);
+            // Update sizes from xp to root
+            Node* n = xp;
+            while (n) {
+                updateSize(n);
+                n = n->parent;
+            }
         } else {
             y = minimum(z->right);
             y_original_color = y->color;
@@ -193,28 +205,38 @@ private:
             
             if (y->parent == z) {
                 xp = y;
+                transplant(z, y);
+                y->left = z->left;
+                y->left->parent = y;
+                y->color = z->color;
+                // Update sizes from y to root
+                Node* n = y;
+                while (n) {
+                    updateSize(n);
+                    n = n->parent;
+                }
             } else {
                 xp = y->parent;
                 transplant(y, y->right);
+                // Update sizes from xp to root
+                Node* n = xp;
+                while (n) {
+                    updateSize(n);
+                    n = n->parent;
+                }
                 y->right = z->right;
                 y->right->parent = y;
+                transplant(z, y);
+                y->left = z->left;
+                y->left->parent = y;
+                y->color = z->color;
+                // Update sizes from y to root
+                n = y;
+                while (n) {
+                    updateSize(n);
+                    n = n->parent;
+                }
             }
-            transplant(z, y);
-            y->left = z->left;
-            y->left->parent = y;
-            y->color = z->color;
-            
-            Node* n = y;
-            while (n != z->parent) {
-                updateSize(n);
-                n = n->parent;
-            }
-        }
-        
-        Node* n = xp;
-        while (n) {
-            updateSize(n);
-            n = n->parent;
         }
         
         delete z;
