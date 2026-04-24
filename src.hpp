@@ -258,8 +258,9 @@ public:
                 node = tree->minimum(node->right);
             } else {
                 Node* p = node->parent;
-                while (p && node == p->right) {
-                    node = p;
+                Node* current = node;
+                while (p && current == p->right) {
+                    current = p;
                     p = p->parent;
                 }
                 node = p;
@@ -282,17 +283,15 @@ public:
                 node = tree->maximum(node->left);
             } else {
                 Node* p = node->parent;
-                Node* orig = node;
-                while (p && node == p->left) {
-                    node = p;
+                Node* current = node;
+                while (p && current == p->left) {
+                    current = p;
                     p = p->parent;
                 }
                 if (p) {
                     node = p;
-                } else {
-                    // We're at begin(), restore original position
-                    node = orig;
                 }
+                // If p is nullptr, we're at begin(), don't change node
             }
             return *this;
         }
