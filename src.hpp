@@ -116,13 +116,18 @@ private:
     
     void fixDelete(Node* x, Node* xp) {
         while (x != root && (!x || x->color == BLACK)) {
+            if (!xp) break;  // Safety check
+            
             if (x == xp->left) {
                 Node* w = xp->right;
+                if (!w) break;  // Safety check
+                
                 if (w->color == RED) {
                     w->color = BLACK;
                     xp->color = RED;
                     rotateLeft(xp);
                     w = xp->right;
+                    if (!w) break;  // Safety check after rotation
                 }
                 if ((!w->left || w->left->color == BLACK) && 
                     (!w->right || w->right->color == BLACK)) {
@@ -135,6 +140,7 @@ private:
                         w->color = RED;
                         rotateRight(w);
                         w = xp->right;
+                        if (!w) break;  // Safety check after rotation
                     }
                     w->color = xp->color;
                     xp->color = BLACK;
@@ -144,11 +150,14 @@ private:
                 }
             } else {
                 Node* w = xp->left;
+                if (!w) break;  // Safety check
+                
                 if (w->color == RED) {
                     w->color = BLACK;
                     xp->color = RED;
                     rotateRight(xp);
                     w = xp->left;
+                    if (!w) break;  // Safety check after rotation
                 }
                 if ((!w->right || w->right->color == BLACK) && 
                     (!w->left || w->left->color == BLACK)) {
@@ -161,6 +170,7 @@ private:
                         w->color = RED;
                         rotateLeft(w);
                         w = xp->left;
+                        if (!w) break;  // Safety check after rotation
                     }
                     w->color = xp->color;
                     xp->color = BLACK;
